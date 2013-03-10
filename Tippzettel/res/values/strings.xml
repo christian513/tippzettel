@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Tippzettel</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_main">Tippzettel</string>
+    <string name="title_activity_login">Tipprunde</string>
+    <string name="Benutzer">Benutzer</string>
+    <string name="Passwort">Passwort</string>
+    <string name="anmelden">Anmelden</string>
+    <string name="falschespwd">Passwort falsch</string>
+    <string name="tipprundeid">tipprundeID</string>
+    <string name="tipprundebeschreibung">tipprundeBeschreibung</string>
+    <string name="benutzer">benutzer</string>
+    <string name="tipper_anzahl">tipper_anzahl</string>
+    <string name="countdown">Bis zum Spieltag</string>
+    <string name="spieltag">Spieltag</string>
+    <string name="punkte">Punkte</string>
+    <string name="position">Position</string>
+    <string name="sieger">Sieger</string>
+
+    <color name="light_blue">#B0E0E6</color>
+    <color name="lemon">#fffacd</color>
+    <color name="gold">#FFD700</color>
+
+    <string name="tippabgabe">Tippabgabe</string>
+    <string name="title_activity_tippabgabe">Tippabgabe</string>
+    <string name="unentschieden">Unentschieden</string>
+
+    <color name="white">#FFFFFF</color>
+    <color name="orange">#FF4500</color>
+
+    <string name="title_activity_spieltag">Spieltag Überblick</string>
+    <string name="tipper">Tipper</string>
+    <string name="risiko">Risiko</string>
+    <string name="title_activity_gesamt_stand">Gesamtstand</string>
+    <string name="gesamtstand">Gesamtstand</string>
+    <string name="tendenz">Tendenz</string>
+    <string name="title_activity_ergebnis">Ergebnisse</string>
+    <string name="skip">Überspringen</string>
+    <string name="speichern">Speichern</string>
+    <string name="reset">Zurücksetzen</string>
+    <string name="ergebnis_eintragen">Ergebnisse eintragen</string>
+    <string name="title_activity_spieltag_spieler">Spieltag Details</string>
+    <string name="tipprunde">Tipprunde</string>
+
+</resources>

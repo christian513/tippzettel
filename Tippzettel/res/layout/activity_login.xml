@@ -1,0 +1,47 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/RelativeLayout1"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:context=".LoginActivity" >
+
+    <Spinner
+        android:id="@+id/tipprunde"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_weight="0" />
+
+    <Spinner
+        android:id="@+id/benutzer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/tipprunde"
+        android:layout_weight="0"
+        android:prompt="@string/Benutzer" />
+
+    <EditText
+        android:id="@+id/passwort"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/benutzer"
+        android:layout_weight="0"
+        android:ems="10"
+        android:hint="@string/Passwort"
+        android:inputType="textPassword" />
+
+    <Button
+        android:id="@+id/anmelden"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/passwort"
+        android:layout_weight="0"
+        android:onClick="anmelden"
+        android:text="@string/anmelden" />
+
+</RelativeLayout>
