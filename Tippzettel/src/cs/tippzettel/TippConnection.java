@@ -30,8 +30,8 @@ import cs.tippzettel.model.Tipprunde;
 
 public class TippConnection {
 
-	private static String newCol = "##";
-	private static String newLine = "#####";
+	private static String newcol = "##";
+	private static String newline = "#####";
 	private static String baseUrl = "http://www.verschmitztes.de/tippen/android.php?cmd=";
 	private static String TIPPZETTEL = "Tippzettel";
 
@@ -51,9 +51,9 @@ public class TippConnection {
 		if (ret.equals("")) {
 			return spiele;
 		}
-		String[] spieleLines = ret.split(newLine);
+		String[] spieleLines = ret.split(newline);
 		for (String spielLine : spieleLines) {
-			String[] details = spielLine.split(newCol);
+			String[] details = spielLine.split(newcol);
 			Team heim = new Team(details[1], details[3], details[2]);
 			Team ausw = new Team(details[4], details[6], details[5]);
 			Spiel s = new Spiel(details[0]);
@@ -68,14 +68,14 @@ public class TippConnection {
 		Tipprunde runde = Tipprunde.instance;
 		String tagStr = tag > -1 ? "&spieltag=" + tag : "";
 		String ret = query("spieltag_punkte&runde=" + runde.getId() + tagStr);
-		String[] lines = ret.split(newLine);
+		String[] lines = ret.split(newline);
 		if (tag == -1) {
 			tag = Integer.valueOf(lines[0]);
 		}
 		String stag = lines[0];
 		Spieltag spieltag = new Spieltag(runde, stag);
-		String[] tipper = lines[1].split(newCol);
-		String[] punkte = lines[2].split(newCol);
+		String[] tipper = lines[1].split(newcol);
+		String[] punkte = lines[2].split(newcol);
 		for (int i = 0; i < tipper.length; i++) {
 			if (tipper[i].equals("")) {
 				continue;
@@ -102,12 +102,12 @@ public class TippConnection {
 		Tipper tipper = runde.getAngemeldeterTipper();
 		String id = runde.getId();
 		String text = query("spiele_tippabgabe&runde=" + id + "&benutzer=" + tipper.getId());
-		String[] spieleStr = text.split(newLine);
+		String[] spieleStr = text.split(newline);
 		for (String spiel : spieleStr) {
 			if (spiel == null || spiel.equals("")) {
 				continue;
 			}
-			String[] details = spiel.split(newCol);
+			String[] details = spiel.split(newcol);
 			Team heim = new Team(details[1], details[3], details[2]);
 			Team ausw = new Team(details[4], details[6], details[5]);
 			Spiel s = new Spiel(details[0]);
@@ -123,9 +123,9 @@ public class TippConnection {
 		Tipper tipper = runde.getAngemeldeterTipper();
 		String id = runde.getId();
 		String text = query("aktueller_spieltag&runde=" + id + "&benutzer=" + tipper.getId());
-		String[] lines = text.split(newLine);
-		String[] line1 = lines[0].split(newCol);
-		String[] line2 = lines[1].split(newCol);
+		String[] lines = text.split(newline);
+		String[] line1 = lines[0].split(newcol);
+		String[] line2 = lines[1].split(newcol);
 		String spieltag = line1[0];
 		int punkte = Integer.valueOf(line1[1]).intValue();
 		int pos = Integer.valueOf(line1[2]).intValue();
@@ -197,13 +197,13 @@ public class TippConnection {
 		Tipprunde runde = Tipprunde.instance;
 		String id = runde.getId();
 		String text = query("gesamt&runde=" + id);
-		String[] lines = text.split(newLine);
+		String[] lines = text.split(newline);
 		GesamtStand[] ret = new GesamtStand[lines.length];
 		int pos = 0;
 		int lastPoints = -99;
 		for (int i = 0; i < lines.length; i++) {
 			String current = lines[i];
-			String[] line = current.split(newCol);
+			String[] line = current.split(newcol);
 			Tipper t = runde.getTipper(line[0]);
 			int punkte = Integer.valueOf(line[1]);
 			int diff = Integer.valueOf(line[2]);
@@ -221,11 +221,11 @@ public class TippConnection {
 		Tipper angemeldeterTipper = runde.getAngemeldeterTipper();
 		String id = runde.getId();
 		String text = query("gesamt&runde=" + id);
-		String[] lines = text.split(newLine);
+		String[] lines = text.split(newline);
 		int pos = 1;
 		int anzahl = runde.getTippers().size();
 		for (String line : lines) {
-			String[] columns = line.split(newCol);
+			String[] columns = line.split(newcol);
 			if (columns.length == 3) {
 				String name = columns[0];
 				if (name.equals(angemeldeterTipper.getId())) {
@@ -257,7 +257,7 @@ public class TippConnection {
 		for (int i = 0; i < positions.size(); i++) {
 			Integer posi = positions.get(i);
 			String current = lines[posi - 1];
-			String[] line = current.split(newCol);
+			String[] line = current.split(newcol);
 			Tipper t = runde.getTipper(line[0]);
 			int punkte = Integer.valueOf(line[1]);
 			ret[i] = new GesamtStand(posi, t, punkte, 0);
@@ -268,9 +268,9 @@ public class TippConnection {
 	public static List<Tipprunde> getTipprunden() {
 		String tipprundenStr = TippConnection.query("tipprunden");
 		List<Tipprunde> runden = new ArrayList<Tipprunde>();
-		String[] rundenLines = tipprundenStr.split(newLine);
+		String[] rundenLines = tipprundenStr.split(newline);
 		for (String rundenLine : rundenLines) {
-			String[] rundeLine = rundenLine.split(newCol);
+			String[] rundeLine = rundenLine.split(newcol);
 			String id = rundeLine[0];
 			String text = rundeLine[1];
 			Tipprunde runde = new Tipprunde(id, text);
@@ -285,7 +285,7 @@ public class TippConnection {
 
 	public static Tipprunde getTipprunde(String tipprundeId) {
 		String text = query("tipprunden&runde=" + tipprundeId);
-		String[] rundeLine = text.split(newCol);
+		String[] rundeLine = text.split(newcol);
 		String id = rundeLine[0];
 		String rtext = rundeLine[1];
 		Tipprunde runde = new Tipprunde(id, rtext);
