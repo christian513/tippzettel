@@ -9,7 +9,7 @@
     <string name="Benutzer">Benutzer</string>
     <string name="Passwort">Passwort</string>
     <string name="anmelden">Anmelden</string>
-    <string name="falschespwd">Passwort falsch</string>
+    <string name="falschespwd">Falsches Passwort</string>
     <string name="tipprundeid">tipprundeID</string>
     <string name="tipprundebeschreibung">tipprundeBeschreibung</string>
     <string name="benutzer">benutzer</string>
