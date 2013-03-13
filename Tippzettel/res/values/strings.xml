@@ -44,5 +44,8 @@
     <string name="ergebnis_eintragen">Ergebnisse eintragen</string>
     <string name="title_activity_spieltag_spieler">Spieltag Details</string>
     <string name="tipprunde">Tipprunde</string>
+    <string name="spiel">Spiel</string>
+    <string name="ergebnis">Ergebnis</string>
+    <string name="tipp">Tipp</string>
 
 </resources>

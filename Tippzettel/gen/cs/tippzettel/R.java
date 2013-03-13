@@ -52,13 +52,14 @@ public final class R {
         public static final int wolfsburg=0x7f02001f;
     }
     public static final class id {
+        public static final int Ergebnis=0x7f080039;
         public static final int LinearLayout1=0x7f080000;
         public static final int LinearLayout2=0x7f08000d;
         public static final int RelativeLayout1=0x7f080012;
         public static final int TextView01=0x7f080011;
         public static final int anmelden=0x7f080016;
-        public static final int auswappen=0x7f08003a;
-        public static final int auswtext=0x7f080037;
+        public static final int auswappen=0x7f08003f;
+        public static final int auswtext=0x7f08003c;
         public static final int benutzer=0x7f080014;
         public static final int button1=0x7f080031;
         public static final int dauerbisspieltag=0x7f080019;
@@ -78,23 +79,26 @@ public final class R {
         public static final int gesnplus1=0x7f08002d;
         public static final int gesposition=0x7f080022;
         public static final int gespunkte=0x7f080024;
-        public static final int heimtext=0x7f080036;
-        public static final int heimwappen=0x7f080038;
+        public static final int header=0x7f080037;
+        public static final int heimtext=0x7f08003b;
+        public static final int heimwappen=0x7f08003d;
         public static final int imageButton1=0x7f080033;
         public static final int imageButton2=0x7f080035;
-        public static final int menu_settings=0x7f08003c;
+        public static final int menu_settings=0x7f080041;
         public static final int okimage=0x7f080017;
         public static final int passwort=0x7f080015;
         public static final int performance=0x7f08001c;
         public static final int position=0x7f08001d;
         public static final int punkte=0x7f08001b;
         public static final int reset=0x7f08000a;
-        public static final int risiko=0x7f08003b;
+        public static final int risiko=0x7f080040;
         public static final int rootlayout=0x7f080032;
-        public static final int rundelogin=0x7f08003d;
+        public static final int rundelogin=0x7f080042;
         public static final int sieger=0x7f08001f;
         public static final int skip=0x7f08000c;
         public static final int speichern=0x7f08000b;
+        public static final int spiel=0x7f080038;
+        public static final int spieler=0x7f080036;
         public static final int spieltag=0x7f080034;
         public static final int tabelle=0x7f08000f;
         public static final int tableRow1=0x7f080010;
@@ -107,11 +111,12 @@ public final class R {
         public static final int textView4=0x7f080005;
         public static final int textView5=0x7f08001e;
         public static final int textView6=0x7f080020;
+        public static final int tipp=0x7f08003a;
         public static final int tippabgabe=0x7f080018;
         public static final int tipprunde=0x7f080013;
         public static final int tore1=0x7f080007;
         public static final int tore2=0x7f080009;
-        public static final int unentschiedenbutton=0x7f080039;
+        public static final int unentschiedenbutton=0x7f08003e;
         public static final int wappen1=0x7f080004;
         public static final int wappen2=0x7f080006;
     }
@@ -140,6 +145,7 @@ public final class R {
         public static final int app_name=0x7f040000;
         public static final int benutzer=0x7f04000b;
         public static final int countdown=0x7f04000d;
+        public static final int ergebnis=0x7f040023;
         public static final int ergebnis_eintragen=0x7f04001f;
         public static final int falschespwd=0x7f040008;
         public static final int gesamtstand=0x7f040019;
@@ -152,8 +158,10 @@ public final class R {
         public static final int sieger=0x7f040011;
         public static final int skip=0x7f04001c;
         public static final int speichern=0x7f04001d;
+        public static final int spiel=0x7f040022;
         public static final int spieltag=0x7f04000e;
         public static final int tendenz=0x7f04001a;
+        public static final int tipp=0x7f040024;
         public static final int tippabgabe=0x7f040012;
         public static final int tipper=0x7f040016;
         public static final int tipper_anzahl=0x7f04000c;

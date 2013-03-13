@@ -3,6 +3,7 @@ package cs.tippzettel;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.Gravity;
@@ -10,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -23,6 +25,7 @@ public class SpieltagActivity extends Activity implements OnTouchListener {
 
 	private int spieltag = -1;
 	private int aktSpieltag = -1;
+	private Intent spieltagSpielerIntent;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +36,8 @@ public class SpieltagActivity extends Activity implements OnTouchListener {
 		findViewById(R.id.rootlayout).setOnTouchListener(this);
 		reload();
 		aktSpieltag = spieltag;
+		this.spieltagSpielerIntent = new Intent(this, SpieltagSpielerActivity.class);
+		spieltagSpielerIntent.putExtra("spieltag", Integer.valueOf(this.aktSpieltag).toString());
 	}
 
 	private void reload() {
@@ -69,6 +74,15 @@ public class SpieltagActivity extends Activity implements OnTouchListener {
 			TextView name = new TextView(this);
 			name.setText(tipper.getName());
 			name.setTextSize(18);
+			name.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					String tipperName = (String) ((TextView) v).getText();
+					spieltagSpielerIntent.putExtra("tipper", tipperName);
+					startActivity(spieltagSpielerIntent);
+				}
+			});
 			if (tipper.equals(runde.getAngemeldeterTipper())) {
 				name.setBackgroundColor(getResources().getColor(R.color.gold));
 			} else {

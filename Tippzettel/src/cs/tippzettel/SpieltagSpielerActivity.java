@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 public class SpieltagSpielerActivity extends Activity {
 
@@ -40,4 +41,10 @@ public class SpieltagSpielerActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 
+	@Override
+	protected void onResume() {
+		super.onResume();
+		((TextView) findViewById(R.id.spieltag)).setText(getIntent().getStringExtra("spieltag"));
+		((TextView) findViewById(R.id.spieler)).setText(getIntent().getStringExtra("tipper"));
+	}
 }
