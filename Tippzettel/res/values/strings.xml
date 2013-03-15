@@ -5,7 +5,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
     <string name="title_activity_main">Tippzettel</string>
-    <string name="title_activity_login">Tipprunde</string>
+    <string name="title_activity_login">Anmeldung</string>
     <string name="Benutzer">Benutzer</string>
     <string name="Passwort">Passwort</string>
     <string name="anmelden">Anmelden</string>
