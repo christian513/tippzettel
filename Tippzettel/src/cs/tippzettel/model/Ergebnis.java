@@ -2,23 +2,23 @@ package cs.tippzettel.model;
 
 public class Ergebnis {
 
-	private int heimTore = -1;
+	private Integer heimTore = -1;
 
-	private int auswTore = -1;
+	private Integer auswTore = -1;
 
 	public Ergebnis() {
 	}
 
-	public Ergebnis(int heimTore, int auswTore) {
+	public Ergebnis(Integer heimTore, Integer auswTore) {
 		this.heimTore = heimTore;
 		this.auswTore = auswTore;
 	}
 
-	public void setHeimTore(int heimTore) {
+	public void setHeimTore(Integer heimTore) {
 		this.heimTore = heimTore;
 	}
 
-	public void setAuswTore(int auswTore) {
+	public void setAuswTore(Integer auswTore) {
 		this.auswTore = auswTore;
 	}
 
@@ -33,6 +33,11 @@ public class Ergebnis {
 		} else {
 			return Tendenz.UNENTSCHIEDEN;
 		}
+	}
+
+	@Override
+	public String toString() {
+		return this.heimTore + ":" + this.auswTore;
 	}
 
 }

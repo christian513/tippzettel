@@ -193,6 +193,7 @@ public class SpieltagActivity extends Activity implements OnTouchListener {
 		if (spieltag > aktSpieltag) {
 			spieltag = 1;
 		}
+		spieltagSpielerIntent.putExtra("spieltag", Integer.valueOf(this.spieltag).toString());
 		reload();
 	}
 
@@ -202,6 +203,10 @@ public class SpieltagActivity extends Activity implements OnTouchListener {
 
 	public void previousSpieltag(View v) {
 		this.spieltag--;
+		if (this.spieltag <= 0) {
+			this.spieltag = this.aktSpieltag;
+		}
+		spieltagSpielerIntent.putExtra("spieltag", Integer.valueOf(this.spieltag).toString());
 		reload();
 	}
 

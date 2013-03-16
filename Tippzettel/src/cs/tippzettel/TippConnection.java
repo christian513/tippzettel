@@ -2,6 +2,8 @@ package cs.tippzettel;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
@@ -20,11 +22,13 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.StrictMode;
 import android.util.Log;
+import cs.tippzettel.model.Ergebnis;
 import cs.tippzettel.model.GesamtStand;
 import cs.tippzettel.model.Spiel;
 import cs.tippzettel.model.Spieltag;
 import cs.tippzettel.model.SpieltagPosition;
 import cs.tippzettel.model.Team;
+import cs.tippzettel.model.Tipp;
 import cs.tippzettel.model.Tipper;
 import cs.tippzettel.model.Tipprunde;
 
@@ -34,6 +38,40 @@ public class TippConnection {
 	private static String newline = "#####";
 	private static String baseUrl = "http://www.verschmitztes.de/tippen/android.php?cmd=";
 	private static String TIPPZETTEL = "Tippzettel";
+
+	public static List<Tipp> getTipps(String spieltag, String benutzer) {
+		Tipprunde runde = Tipprunde.instance;
+		String ret = query("spieltag_spieler&runde=" + runde.getId() + "&benutzer=" + benutzer + "&spieltag="
+				+ spieltag);
+		List<Tipp> tipps = new ArrayList<Tipp>();
+		String[] lines = ret.split(newline);
+		for (String line : lines) {
+			String[] details = line.split(newcol);
+			if (details.length != 11) {
+				continue;
+			}
+			Team heim = new Team(details[1], details[3], details[2]);
+			Team ausw = new Team(details[4], details[6], details[5]);
+			Spiel s = new Spiel(details[0]);
+			s.setHeimTeam(heim);
+			s.setAuswTeam(ausw);
+			Ergebnis e = new Ergebnis(Integer.valueOf(details[9]), Integer.valueOf(details[10]));
+			s.setErgebnis(e);
+			Tipp t = new Tipp(s);
+			t.setTipper(runde.getTipper(benutzer));
+			t.setPunkte(Integer.valueOf(details[7]));
+			t.setTipp(details[8]);
+			tipps.add(t);
+		}
+		Collections.sort(tipps, new Comparator<Tipp>() {
+
+			@Override
+			public int compare(Tipp arg0, Tipp arg1) {
+				return arg1.getPunkte() - arg0.getPunkte();
+			}
+		});
+		return tipps;
+	}
 
 	public static boolean speichereSpiel(String spielId, String heimtore, String auswtore) {
 		Tipprunde runde = Tipprunde.instance;

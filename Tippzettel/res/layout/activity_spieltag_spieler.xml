@@ -19,6 +19,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TableLayout
+        android:id="@+id/tipptabelle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/spieltag" >
@@ -32,6 +33,7 @@
                 android:id="@+id/spiel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:padding="5dp"
                 android:text="@string/spiel"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -40,6 +42,7 @@
                 android:id="@+id/Ergebnis"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:padding="5dp"
                 android:text="@string/ergebnis"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -48,6 +51,7 @@
                 android:id="@+id/tipp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:padding="5dp"
                 android:text="@string/tipp"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -56,6 +60,7 @@
                 android:id="@+id/punkte"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:padding="5dp"
                 android:text="@string/punkte"
                 android:textAppearance="?android:attr/textAppearanceMedium" />

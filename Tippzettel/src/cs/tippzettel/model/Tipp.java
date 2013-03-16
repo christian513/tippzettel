@@ -8,8 +8,20 @@ public class Tipp {
 
 	private final Spiel spiel;
 
+	private String tipp;
+
+	private Integer punkte;
+
 	public Tipp(Spiel spiel) {
 		this.spiel = spiel;
+	}
+
+	public void setPunkte(Integer punkte) {
+		this.punkte = punkte;
+	}
+
+	public Integer getPunkte() {
+		return punkte;
 	}
 
 	public Tipper getTipper() {
@@ -20,16 +32,16 @@ public class Tipp {
 		this.tipper = tipper;
 	}
 
-	public Ergebnis getErgebnis() {
-		return this.ergebnis;
-	}
-
-	public void setErgebnis(Ergebnis ergebnis) {
-		this.ergebnis = ergebnis;
-	}
-
 	public Spiel getSpiel() {
 		return this.spiel;
+	}
+
+	public String getTipp() {
+		return tipp;
+	}
+
+	public void setTipp(String tipp) {
+		this.tipp = tipp;
 	}
 
 }

@@ -6,7 +6,7 @@ public class Spiel extends IdObjekt {
 
 	private Team auswTeam;
 
-	private final Ergebnis ergebnis = new Ergebnis();
+	private Ergebnis ergebnis = new Ergebnis();
 
 	public Spiel(String id) {
 		super(id);
@@ -38,6 +38,10 @@ public class Spiel extends IdObjekt {
 
 	public void setAuswTeam(Team auswTeam) {
 		this.auswTeam = auswTeam;
+	}
+
+	public void setErgebnis(Ergebnis ergebnis) {
+		this.ergebnis = ergebnis;
 	}
 
 }

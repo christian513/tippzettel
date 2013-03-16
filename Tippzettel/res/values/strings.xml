@@ -47,5 +47,7 @@
     <string name="spiel">Spiel</string>
     <string name="ergebnis">Ergebnis</string>
     <string name="tipp">Tipp</string>
+    <color name="red">#800000</color>
+    <color name="green">#008000</color>
 
 </resources>
