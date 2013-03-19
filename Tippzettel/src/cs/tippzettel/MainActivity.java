@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -79,6 +80,8 @@ public class MainActivity extends Activity {
 				okImage.setImageDrawable(getResources().getDrawable(R.drawable.not_ok));
 				// findViewById(R.id.tippabgabe).setVisibility(View.VISIBLE);
 			}
+			// ((Button) findViewById(R.id.tippabgabe)).setText(Html
+			// .fromHtml("Tippabgabe<br/><font size='-3'>(11 Tage und 4 Stunden)</font>"));
 		} else {
 			// TODO error handling
 		}
@@ -101,16 +104,20 @@ public class MainActivity extends Activity {
 		position.setText(gesamtStand.getPosition().toString());
 		name.setText(gesamtStand.getTipper().getId());
 		if (gesamtStand.getTipper().equals(Tipprunde.instance.getAngemeldeterTipper())) {
-			name.setBackgroundColor(getResources().getColor(R.color.gold));
+			name.setTypeface(null, Typeface.BOLD);
+			punkte.setTypeface(null, Typeface.BOLD);
+			position.setTypeface(null, Typeface.BOLD);
 		} else {
-			name.setBackgroundColor(getResources().getColor(R.color.light_blue));
+			name.setTypeface(null, Typeface.NORMAL);
+			punkte.setTypeface(null, Typeface.NORMAL);
+			position.setTypeface(null, Typeface.NORMAL);
 		}
 		punkte.setText(gesamtStand.getPunkte().toString());
 	}
 
 	private void reloadLetzterSpieltag() {
 		SpieltagPosition sp = TippConnection.getSpieltagPosition();
-		((TextView) findViewById(R.id.tag)).setText(sp.getNummer() + ".");
+		// ((TextView) findViewById(R.id.tag)).setText(sp.getNummer() + ".");
 		((TextView) findViewById(R.id.punkte)).setText(sp.getPunkte().toString());
 		((TextView) findViewById(R.id.position)).setText(sp.getPosition().toString());
 		String siegerText = sp.getSieger() + " (" + sp.getMax() + ")";

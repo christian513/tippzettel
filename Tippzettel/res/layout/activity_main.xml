@@ -3,7 +3,7 @@
     android:id="@+id/LinearLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/lemon"
+    android:background="@drawable/background_shape"
     android:orientation="vertical"
     tools:context=".MainActivity" >
 
@@ -21,9 +21,11 @@
 
         <Button
             android:id="@+id/tippabgabe"
+            style="@style/TippButtons"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="@drawable/tippabgabe_selector_red"
             android:onClick="tippabgabe"
             android:text="@string/tippabgabe" />
 
@@ -56,7 +58,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:background="@color/light_blue"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/section_background_shape"
         android:clickable="true"
         android:onClick="spieltagdetails"
         android:orientation="vertical" >
@@ -66,19 +69,11 @@
             android:layout_height="wrap_content" >
 
             <TextView
-                android:id="@+id/tag"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:text="XX"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-            <TextView
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/spieltag"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:text="@string/aktuell"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
         </LinearLayout>
 
         <LinearLayout
@@ -159,7 +154,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:background="@color/light_blue"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/section_background_shape"
         android:orientation="vertical" >
 
         <TextView
@@ -301,8 +297,10 @@
 
     <Button
         android:id="@+id/button1"
+        style="@style/TippButtons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/yellow_button"
         android:onClick="ergebnisse"
         android:text="@string/ergebnis_eintragen" />
 

@@ -93,11 +93,7 @@ public class SpieltagSpielerActivity extends Activity {
 		} else {
 			textView.setTextColor(getResources().getColor(R.color.green));
 		}
-		if (punkte > 0) {
-			textView.setTextSize(8 + punkte);
-		} else {
-			textView.setTextSize(6 - punkte);
-		}
+		textView.setTextSize(8 + punkte);
 		tr.addView(textView);
 		return textView;
 	}

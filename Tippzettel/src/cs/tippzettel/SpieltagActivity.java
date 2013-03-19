@@ -65,6 +65,17 @@ public class SpieltagActivity extends Activity implements OnTouchListener {
 			TextView position = new TextView(this);
 			position.setTextSize(18);
 			position.setText(pos.toString());
+
+			position.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					String tipperName = (String) ((TextView) v).getText();
+					spieltagSpielerIntent.putExtra("tipper", tipperName);
+					startActivity(spieltagSpielerIntent);
+				}
+			});
+
 			LayoutParams layout = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 			layout.setMargins(0, 0, 0, 10);
 			position.setLayoutParams(layout);
@@ -97,6 +108,17 @@ public class SpieltagActivity extends Activity implements OnTouchListener {
 			punkte.setTextSize(18);
 			punkte.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 			punkte.setGravity(Gravity.CENTER_HORIZONTAL);
+
+			punkte.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					String tipperName = (String) ((TextView) v).getText();
+					spieltagSpielerIntent.putExtra("tipper", tipperName);
+					startActivity(spieltagSpielerIntent);
+				}
+			});
+
 			tr.addView(punkte);
 
 			tl.addView(tr, new TableLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));

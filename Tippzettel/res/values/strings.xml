@@ -41,7 +41,7 @@
     <string name="skip">Überspringen</string>
     <string name="speichern">Speichern</string>
     <string name="reset">Zurücksetzen</string>
-    <string name="ergebnis_eintragen">Ergebnisse eintragen</string>
+    <string name="ergebnis_eintragen">Ergebnisse</string>
     <string name="title_activity_spieltag_spieler">Spieltag Details</string>
     <string name="tipprunde">Tipprunde</string>
     <string name="spiel">Spiel</string>
@@ -49,5 +49,7 @@
     <string name="tipp">Tipp</string>
     <color name="red">#800000</color>
     <color name="green">#008000</color>
+    <color name="transparent">#00000000</color>
+    <string name="aktuell">Aktueller Spieltag</string>
 
 </resources>
