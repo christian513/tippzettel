@@ -39,6 +39,12 @@ public class TippConnection {
 	private static String baseUrl = "http://www.verschmitztes.de/tippen/android.php?cmd=";
 	private static String TIPPZETTEL = "Tippzettel";
 
+	public static boolean hatOffeneSpiele() {
+		Tipprunde runde = Tipprunde.instance;
+		String ret = query("hat_offene_spiele&runde=" + runde.getId());
+		return Boolean.valueOf(ret);
+	}
+
 	public static List<Tipp> getTipps(String spieltag, String benutzer) {
 		Tipprunde runde = Tipprunde.instance;
 		String ret = query("spieltag_spieler&runde=" + runde.getId() + "&benutzer=" + benutzer + "&spieltag="

@@ -33,7 +33,7 @@ public class SpieltagActivity extends Activity implements OnTouchListener {
 		setContentView(R.layout.activity_spieltag);
 		// Show the Up button in the action bar.
 		// getActionBar().setDisplayHomeAsUpEnabled(true);
-		findViewById(R.id.rootlayout).setOnTouchListener(this);
+		// findViewById(R.id.rootlayout).setOnTouchListener(this);
 		reload();
 		aktSpieltag = spieltag;
 		this.spieltagSpielerIntent = new Intent(this, SpieltagSpielerActivity.class);

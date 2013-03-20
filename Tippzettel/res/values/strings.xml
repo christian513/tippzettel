@@ -24,7 +24,7 @@
     <color name="lemon">#fffacd</color>
     <color name="gold">#FFD700</color>
 
-    <string name="tippabgabe">Tippabgabe</string>
+    <string name="tippabgabe">Tippen</string>
     <string name="title_activity_tippabgabe">Tippabgabe</string>
     <string name="unentschieden">Unentschieden</string>
 

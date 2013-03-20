@@ -1,15 +1,19 @@
 package cs.tippzettel;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import cs.tippzettel.model.GesamtStand;
@@ -52,6 +56,7 @@ public class MainActivity extends Activity {
 		reloadGesamtStand();
 	}
 
+	@SuppressLint("NewApi")
 	private void reloadNaechsterSpieltag() {
 		Tipprunde runde = Tipprunde.instance;
 		String text = TippConnection.query("status_naechster_spieltag&runde=" + runde.getId() + "&benutzer="
@@ -59,27 +64,42 @@ public class MainActivity extends Activity {
 		String[] parts = text.split("##");
 		if (parts.length == 3) {
 			String getippt = parts[0];
-			String dauer = "";
-			String tage = parts[1];
-			String stunden = parts[2];
-			if (tage.equals("0")) {
-				dauer = stunden + " Stunden";
-			} else {
-				dauer = tage + " Tage";
-				if (!stunden.equals("0")) {
-					dauer += " und " + stunden + " Stunden";
-				}
-			}
-			TextView dauerView = (TextView) findViewById(R.id.dauerbisspieltag);
-			dauerView.setText(dauer);
-			ImageView okImage = (ImageView) findViewById(R.id.okimage);
+			Button abgabeButton = (Button) findViewById(R.id.tippabgabe);
 			if (getippt.equals("1")) {
-				okImage.setImageDrawable(getResources().getDrawable(R.drawable.ok));
-				// findViewById(R.id.tippabgabe).setVisibility(View.INVISIBLE);
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+					abgabeButton.setBackground(getResources().getDrawable(R.drawable.tippabgabe_selector_button));
+				} else {
+					abgabeButton.setBackgroundDrawable(getResources()
+							.getDrawable(R.drawable.tippabgabe_selector_button));
+				}
+				abgabeButton.setText("Tipps abgegeben");
+				abgabeButton.setEnabled(false);
 			} else {
-				okImage.setImageDrawable(getResources().getDrawable(R.drawable.not_ok));
-				// findViewById(R.id.tippabgabe).setVisibility(View.VISIBLE);
+				String dauer = "";
+				String tage = parts[1];
+				String stunden = parts[2];
+
+				if (tage.equals("0")) {
+					dauer = stunden + " Stunden";
+				} else {
+					if (!stunden.equals("0")) {
+						Double std = Double.valueOf(stunden);
+						double rat = std / 24;
+						rat += Double.valueOf(tage);
+						rat = Math.round(rat * 10.0) / 10.0;
+						dauer = rat + " Tage";
+					}
+				}
+				abgabeButton.setText(Html.fromHtml("Tippen <small>(" + dauer + ")</small>"));
+				abgabeButton.setEnabled(true);
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+					abgabeButton.setBackground(getResources().getDrawable(R.drawable.tippabgabe_selector_red));
+				} else {
+					abgabeButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.tippabgabe_selector_red));
+				}
+
 			}
+
 			// ((Button) findViewById(R.id.tippabgabe)).setText(Html
 			// .fromHtml("Tippabgabe<br/><font size='-3'>(11 Tage und 4 Stunden)</font>"));
 		} else {
@@ -115,6 +135,7 @@ public class MainActivity extends Activity {
 		punkte.setText(gesamtStand.getPunkte().toString());
 	}
 
+	@SuppressLint("NewApi")
 	private void reloadLetzterSpieltag() {
 		SpieltagPosition sp = TippConnection.getSpieltagPosition();
 		// ((TextView) findViewById(R.id.tag)).setText(sp.getNummer() + ".");
@@ -137,6 +158,24 @@ public class MainActivity extends Activity {
 		} else {
 			pview.setImageResource(R.drawable.daumen_neutral);
 		}
+
+		boolean offeneSpiele = TippConnection.hatOffeneSpiele();
+		Button ergebnisse = (Button) findViewById(R.id.ergebniseingabe);
+		ergebnisse.setEnabled(offeneSpiele);
+		if (offeneSpiele) {
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+				ergebnisse.setBackground(getResources().getDrawable(R.drawable.tippabgabe_selector_red));
+			} else {
+				ergebnisse.setBackgroundDrawable(getResources().getDrawable(R.drawable.tippabgabe_selector_red));
+			}
+		} else {
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+				ergebnisse.setBackground(getResources().getDrawable(R.drawable.tippabgabe_selector_button));
+			} else {
+				ergebnisse.setBackgroundDrawable(getResources().getDrawable(R.drawable.tippabgabe_selector_button));
+			}
+		}
+
 	}
 
 	private void setupTipprunde(Intent intent) {
