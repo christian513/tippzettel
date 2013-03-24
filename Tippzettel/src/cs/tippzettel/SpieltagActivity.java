@@ -4,6 +4,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.Gravity;
@@ -94,11 +95,7 @@ public class SpieltagActivity extends Activity implements OnTouchListener {
 					startActivity(spieltagSpielerIntent);
 				}
 			});
-			if (tipper.equals(runde.getAngemeldeterTipper())) {
-				name.setBackgroundColor(getResources().getColor(R.color.gold));
-			} else {
-				name.setBackgroundColor(getResources().getColor(R.color.white));
-			}
+
 			name.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 			name.setGravity(Gravity.CENTER_HORIZONTAL);
 			tr.addView(name);
@@ -118,6 +115,16 @@ public class SpieltagActivity extends Activity implements OnTouchListener {
 					startActivity(spieltagSpielerIntent);
 				}
 			});
+
+			if (tipper.equals(runde.getAngemeldeterTipper())) {
+				name.setTypeface(null, Typeface.BOLD);
+				punkte.setTypeface(null, Typeface.BOLD);
+				position.setTypeface(null, Typeface.BOLD);
+			} else {
+				name.setTypeface(null, Typeface.NORMAL);
+				punkte.setTypeface(null, Typeface.NORMAL);
+				position.setTypeface(null, Typeface.NORMAL);
+			}
 
 			tr.addView(punkte);
 

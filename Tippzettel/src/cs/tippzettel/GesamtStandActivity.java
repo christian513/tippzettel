@@ -2,6 +2,7 @@ package cs.tippzettel;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -54,11 +55,7 @@ public class GesamtStandActivity extends Activity {
 			TextView name = new TextView(this);
 			name.setText(stand.getTipper().getName());
 			name.setTextSize(18);
-			if (stand.getTipper().equals(runde.getAngemeldeterTipper())) {
-				name.setBackgroundColor(getResources().getColor(R.color.gold));
-			} else {
-				name.setBackgroundColor(getResources().getColor(R.color.white));
-			}
+
 			name.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 			name.setGravity(Gravity.CENTER_HORIZONTAL);
 			tr.addView(name);
@@ -68,6 +65,17 @@ public class GesamtStandActivity extends Activity {
 			punkte.setTextSize(18);
 			punkte.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 			punkte.setGravity(Gravity.CENTER_HORIZONTAL);
+
+			if (stand.getTipper().equals(runde.getAngemeldeterTipper())) {
+				name.setTypeface(null, Typeface.BOLD);
+				punkte.setTypeface(null, Typeface.BOLD);
+				position.setTypeface(null, Typeface.BOLD);
+			} else {
+				name.setTypeface(null, Typeface.NORMAL);
+				punkte.setTypeface(null, Typeface.NORMAL);
+				position.setTypeface(null, Typeface.NORMAL);
+			}
+
 			tr.addView(punkte);
 
 			if (stand.getDiff() != 0) {

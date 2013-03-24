@@ -9,7 +9,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="fill_parent" >
 
         <LinearLayout
             android:id="@+id/LinearLayout2"
@@ -251,29 +251,29 @@
         </LinearLayout>
 
         <Button
-            android:id="@+id/tippabgabe"
-            style="@style/TippButtons"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/gesamtlayout"
-            android:layout_margin="10dp"
-            android:layout_weight="1"
-            android:background="@drawable/tippabgabe_selector_button"
-            android:onClick="tippabgabe"
-            android:text="@string/tippabgabe" />
-
-        <Button
             android:id="@+id/ergebniseingabe"
             style="@style/TippButtons"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@+id/tippabgabe"
             android:layout_alignBottom="@+id/tippabgabe"
-            android:layout_margin="10dp"
-            android:layout_toRightOf="@+id/tippabgabe"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="30dp"
             android:background="@drawable/tippabgabe_selector_button"
             android:onClick="ergebnisse"
             android:text="@string/ergebnis_eintragen" />
+
+        <Button
+            android:id="@+id/tippabgabe"
+            style="@style/TippButtons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginRight="30dp"
+            android:background="@drawable/tippabgabe_selector_button"
+            android:onClick="tippabgabe"
+            android:text="@string/tippabgabe" />
 
     </RelativeLayout>
 

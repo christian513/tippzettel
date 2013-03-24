@@ -88,6 +88,8 @@ public class MainActivity extends Activity {
 						rat += Double.valueOf(tage);
 						rat = Math.round(rat * 10.0) / 10.0;
 						dauer = rat + " Tage";
+					} else {
+						dauer = tage + " Tage";
 					}
 				}
 				abgabeButton.setText(Html.fromHtml("Tippen <small>(" + dauer + ")</small>"));
