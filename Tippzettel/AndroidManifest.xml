@@ -32,7 +32,7 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filter> 
                     </activity>
 
         <!--
@@ -94,6 +94,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="cs.tippzettel.SpieltagActivity" />
         </activity>
+        <receiver android:name="TippNotificationReceiver"></receiver>
     </application>
 
 </manifest>

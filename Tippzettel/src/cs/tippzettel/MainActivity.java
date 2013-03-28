@@ -1,7 +1,15 @@
 package cs.tippzettel;
 
+import java.util.Calendar;
+import java.util.TimeZone;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -9,6 +17,8 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,6 +47,21 @@ public class MainActivity extends Activity {
 		}
 	}
 
+
+	private void scheduleNotification() {
+		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+		//TODO speichere in prefs den letzten geschedulten spieltag, gleiche vor dem schedulen ab, ob der nächste spieltag
+		// schon gescheduled wurde
+		Calendar calendar = Calendar.getInstance();
+		 calendar.setTimeInMillis(System.currentTimeMillis() + 10000);
+		 AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+		 int id = (int) System.currentTimeMillis();
+		 Intent intent = new Intent(this, TippNotificationReceiver.class);
+		 PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+		 alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
+	}
+
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode == Activity.RESULT_OK && requestCode == LOGIN) {
@@ -47,7 +72,8 @@ public class MainActivity extends Activity {
 
 	private boolean isInitialized() {
 		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-		return !preferences.getString(getString(R.string.tipprundeid), "").equals("");
+		return !preferences.getString(getString(R.string.tipprundeid), "")
+				.equals("");
 	}
 
 	private void reload() {
@@ -59,18 +85,22 @@ public class MainActivity extends Activity {
 	@SuppressLint("NewApi")
 	private void reloadNaechsterSpieltag() {
 		Tipprunde runde = Tipprunde.instance;
-		String text = TippConnection.query("status_naechster_spieltag&runde=" + runde.getId() + "&benutzer="
-				+ runde.getAngemeldeterTipper().getId() + "&passwort=" + runde.getAngemeldeterTipper().getPasswort());
+		String text = TippConnection.query("status_naechster_spieltag&runde="
+				+ runde.getId() + "&benutzer="
+				+ runde.getAngemeldeterTipper().getId() + "&passwort="
+				+ runde.getAngemeldeterTipper().getPasswort());
 		String[] parts = text.split("##");
 		if (parts.length == 3) {
 			String getippt = parts[0];
 			Button abgabeButton = (Button) findViewById(R.id.tippabgabe);
 			if (getippt.equals("1")) {
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-					abgabeButton.setBackground(getResources().getDrawable(R.drawable.tippabgabe_selector_button));
+					abgabeButton.setBackground(getResources().getDrawable(
+							R.drawable.tippabgabe_selector_button));
 				} else {
-					abgabeButton.setBackgroundDrawable(getResources()
-							.getDrawable(R.drawable.tippabgabe_selector_button));
+					abgabeButton
+							.setBackgroundDrawable(getResources().getDrawable(
+									R.drawable.tippabgabe_selector_button));
 				}
 				abgabeButton.setText("Tipps abgegeben");
 				abgabeButton.setEnabled(false);
@@ -92,12 +122,15 @@ public class MainActivity extends Activity {
 						dauer = tage + " Tage";
 					}
 				}
-				abgabeButton.setText(Html.fromHtml("Tippen <small>(" + dauer + ")</small>"));
+				abgabeButton.setText(Html.fromHtml("Tippen <small>(" + dauer
+						+ ")</small>"));
 				abgabeButton.setEnabled(true);
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-					abgabeButton.setBackground(getResources().getDrawable(R.drawable.tippabgabe_selector_red));
+					abgabeButton.setBackground(getResources().getDrawable(
+							R.drawable.tippabgabe_selector_red));
 				} else {
-					abgabeButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.tippabgabe_selector_red));
+					abgabeButton.setBackgroundDrawable(getResources()
+							.getDrawable(R.drawable.tippabgabe_selector_red));
 				}
 
 			}
@@ -112,20 +145,26 @@ public class MainActivity extends Activity {
 	private void reloadGesamtStand() {
 		GesamtStand[] staende = TippConnection.getGesamtStandKurz();
 
-		zeigePosition(staende[0], R.id.gesposition, R.id.gesname, R.id.gespunkte);
-		zeigePosition(staende[1], R.id.ges2position, R.id.ges2name, R.id.ges2punkte);
-		zeigePosition(staende[2], R.id.ges3position, R.id.ges3name, R.id.ges3punkte);
-		zeigePosition(staende[3], R.id.ges4position, R.id.ges4name, R.id.ges4punkte);
+		zeigePosition(staende[0], R.id.gesposition, R.id.gesname,
+				R.id.gespunkte);
+		zeigePosition(staende[1], R.id.ges2position, R.id.ges2name,
+				R.id.ges2punkte);
+		zeigePosition(staende[2], R.id.ges3position, R.id.ges3name,
+				R.id.ges3punkte);
+		zeigePosition(staende[3], R.id.ges4position, R.id.ges4name,
+				R.id.ges4punkte);
 	}
 
-	private void zeigePosition(GesamtStand gesamtStand, int gesposition, int gesname, int gespunkte) {
+	private void zeigePosition(GesamtStand gesamtStand, int gesposition,
+			int gesname, int gespunkte) {
 		TextView position = (TextView) findViewById(gesposition);
 		TextView name = (TextView) findViewById(gesname);
 		TextView punkte = (TextView) findViewById(gespunkte);
 
 		position.setText(gesamtStand.getPosition().toString());
 		name.setText(gesamtStand.getTipper().getId());
-		if (gesamtStand.getTipper().equals(Tipprunde.instance.getAngemeldeterTipper())) {
+		if (gesamtStand.getTipper().equals(
+				Tipprunde.instance.getAngemeldeterTipper())) {
 			name.setTypeface(null, Typeface.BOLD);
 			punkte.setTypeface(null, Typeface.BOLD);
 			position.setTypeface(null, Typeface.BOLD);
@@ -141,8 +180,10 @@ public class MainActivity extends Activity {
 	private void reloadLetzterSpieltag() {
 		SpieltagPosition sp = TippConnection.getSpieltagPosition();
 		// ((TextView) findViewById(R.id.tag)).setText(sp.getNummer() + ".");
-		((TextView) findViewById(R.id.punkte)).setText(sp.getPunkte().toString());
-		((TextView) findViewById(R.id.position)).setText(sp.getPosition().toString());
+		((TextView) findViewById(R.id.punkte)).setText(sp.getPunkte()
+				.toString());
+		((TextView) findViewById(R.id.position)).setText(sp.getPosition()
+				.toString());
 		String siegerText = sp.getSieger() + " (" + sp.getMax() + ")";
 		((TextView) findViewById(R.id.sieger)).setText(siegerText);
 		int schnitt = sp.getSchnitt();
@@ -166,15 +207,19 @@ public class MainActivity extends Activity {
 		ergebnisse.setEnabled(offeneSpiele);
 		if (offeneSpiele) {
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-				ergebnisse.setBackground(getResources().getDrawable(R.drawable.tippabgabe_selector_red));
+				ergebnisse.setBackground(getResources().getDrawable(
+						R.drawable.tippabgabe_selector_red));
 			} else {
-				ergebnisse.setBackgroundDrawable(getResources().getDrawable(R.drawable.tippabgabe_selector_red));
+				ergebnisse.setBackgroundDrawable(getResources().getDrawable(
+						R.drawable.tippabgabe_selector_red));
 			}
 		} else {
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-				ergebnisse.setBackground(getResources().getDrawable(R.drawable.tippabgabe_selector_button));
+				ergebnisse.setBackground(getResources().getDrawable(
+						R.drawable.tippabgabe_selector_button));
 			} else {
-				ergebnisse.setBackgroundDrawable(getResources().getDrawable(R.drawable.tippabgabe_selector_button));
+				ergebnisse.setBackgroundDrawable(getResources().getDrawable(
+						R.drawable.tippabgabe_selector_button));
 			}
 		}
 
@@ -187,13 +232,15 @@ public class MainActivity extends Activity {
 		String password = null;
 		if (isInitialized()) {
 			// read from preferences
-			tipprundeId = preferences.getString(getString(R.string.tipprundeid), "");
+			tipprundeId = preferences.getString(
+					getString(R.string.tipprundeid), "");
 			benutzer = preferences.getString(getString(R.string.benutzer), "");
 			password = preferences.getString(getString(R.string.Passwort), "");
 		} else {
 			// first usage, read from intent and save to preferences
 			Editor edit = preferences.edit();
-			tipprundeId = intent.getStringExtra(getString(R.string.tipprundeid));
+			tipprundeId = intent
+					.getStringExtra(getString(R.string.tipprundeid));
 			edit.putString(getString(R.string.tipprundeid), tipprundeId);
 			benutzer = intent.getStringExtra(getString(R.string.benutzer));
 			edit.putString(getString(R.string.benutzer), benutzer);
@@ -258,6 +305,7 @@ public class MainActivity extends Activity {
 		if (isInitialized()) {
 			reload();
 		}
+		scheduleNotification();
 	}
 
 	@Override
