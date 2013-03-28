@@ -29,6 +29,7 @@ import cs.tippzettel.model.Spieltag;
 import cs.tippzettel.model.SpieltagPosition;
 import cs.tippzettel.model.Team;
 import cs.tippzettel.model.Tipp;
+import cs.tippzettel.model.TippabgabeStatus;
 import cs.tippzettel.model.Tipper;
 import cs.tippzettel.model.Tipprunde;
 
@@ -43,6 +44,15 @@ public class TippConnection {
 		Tipprunde runde = Tipprunde.instance;
 		String ret = query("hat_offene_spiele&runde=" + runde.getId());
 		return Boolean.valueOf(ret);
+	}
+
+	public static TippabgabeStatus getTippabgabeStatus() {
+		Tipprunde runde = Tipprunde.instance;
+		String text = TippConnection.query("status_naechster_spieltag&runde=" + runde.getId() + "&benutzer="
+				+ runde.getAngemeldeterTipper().getId() + "&passwort=" + runde.getAngemeldeterTipper().getPasswort()
+				+ "&spieltag=x");
+		String[] parts = text.split("##");
+		return new TippabgabeStatus(parts[0].equals("1"), parts[3], parts[1], parts[2]);
 	}
 
 	public static List<Tipp> getTipps(String spieltag, String benutzer) {
@@ -267,7 +277,7 @@ public class TippConnection {
 		String text = query("gesamt&runde=" + id);
 		String[] lines = text.split(newline);
 		int pos = 1;
-		int anzahl = runde.getTippers().size();
+		int anzahl = runde.getTipperCount();
 		for (String line : lines) {
 			String[] columns = line.split(newcol);
 			if (columns.length == 3) {
@@ -329,6 +339,7 @@ public class TippConnection {
 
 	public static Tipprunde getTipprunde(String tipprundeId) {
 		String text = query("tipprunden&runde=" + tipprundeId);
+		text = text.split(newline)[0];
 		String[] rundeLine = text.split(newcol);
 		String id = rundeLine[0];
 		String rtext = rundeLine[1];

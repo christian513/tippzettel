@@ -1,13 +1,11 @@
 package cs.tippzettel;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.TimeZone;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -17,9 +15,8 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 import android.text.Html;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,11 +25,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import cs.tippzettel.model.GesamtStand;
 import cs.tippzettel.model.SpieltagPosition;
+import cs.tippzettel.model.TippabgabeStatus;
 import cs.tippzettel.model.Tipprunde;
 
 public class MainActivity extends Activity {
 
 	private static final int LOGIN = 1;
+	private static final String SCHEDULED_TIPPABGABE_SPIELTAG = "SCHEDULED_TIPPABGABE_SPIELTAG";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,20 +46,35 @@ public class MainActivity extends Activity {
 		}
 	}
 
-
-	private void scheduleNotification() {
+	private void scheduleTippabgabeNotification(String spieltag, String tage, String stunden) {
 		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-		//TODO speichere in prefs den letzten geschedulten spieltag, gleiche vor dem schedulen ab, ob der nächste spieltag
-		// schon gescheduled wurde
-		Calendar calendar = Calendar.getInstance();
-		 calendar.setTimeInMillis(System.currentTimeMillis() + 10000);
-		 AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-		 int id = (int) System.currentTimeMillis();
-		 Intent intent = new Intent(this, TippNotificationReceiver.class);
-		 PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-		 alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
-	}
+		if (!alreadyScheduledFor(Tipprunde.instance, spieltag)) {
+			Editor edit = preferences.edit();
+			edit.putString(createTippabgabeScheduleKey(Tipprunde.instance), spieltag);
+			edit.commit();
+			Calendar calendar = Calendar.getInstance();
 
+			long offset = 0;
+			if (!tage.equals("0")) {
+				Long MILLIS_HOURS = 1000L * 60L * 60L;
+				Long MILLIS_DAYS = 24L * MILLIS_HOURS;
+				Long day = Long.valueOf(tage);
+				day -= 1L;
+				// erinnerung 1 Tag vorher
+				offset = day * MILLIS_DAYS + Long.valueOf(stunden) * MILLIS_HOURS;
+			}
+			long reminderTime = System.currentTimeMillis() + offset;
+			calendar.setTimeInMillis(reminderTime);
+			SimpleDateFormat format = new SimpleDateFormat();
+			Log.d("Tippzettel", "Tippabgabe reminder at " + format.format(calendar.getTime()));
+			AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+			int id = (int) System.currentTimeMillis();
+			Intent intent = new Intent(this, TippNotificationReceiver.class);
+			PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), id, intent,
+					PendingIntent.FLAG_UPDATE_CURRENT);
+			alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
+		}
+	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -72,8 +86,7 @@ public class MainActivity extends Activity {
 
 	private boolean isInitialized() {
 		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-		return !preferences.getString(getString(R.string.tipprundeid), "")
-				.equals("");
+		return !preferences.getString(getString(R.string.tipprundeid), "").equals("");
 	}
 
 	private void reload() {
@@ -84,87 +97,66 @@ public class MainActivity extends Activity {
 
 	@SuppressLint("NewApi")
 	private void reloadNaechsterSpieltag() {
-		Tipprunde runde = Tipprunde.instance;
-		String text = TippConnection.query("status_naechster_spieltag&runde="
-				+ runde.getId() + "&benutzer="
-				+ runde.getAngemeldeterTipper().getId() + "&passwort="
-				+ runde.getAngemeldeterTipper().getPasswort());
-		String[] parts = text.split("##");
-		if (parts.length == 3) {
-			String getippt = parts[0];
-			Button abgabeButton = (Button) findViewById(R.id.tippabgabe);
-			if (getippt.equals("1")) {
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-					abgabeButton.setBackground(getResources().getDrawable(
-							R.drawable.tippabgabe_selector_button));
-				} else {
-					abgabeButton
-							.setBackgroundDrawable(getResources().getDrawable(
-									R.drawable.tippabgabe_selector_button));
-				}
-				abgabeButton.setText("Tipps abgegeben");
-				abgabeButton.setEnabled(false);
+		TippabgabeStatus status = TippConnection.getTippabgabeStatus();
+		Button abgabeButton = (Button) findViewById(R.id.tippabgabe);
+		if (status.isGetippt()) {
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+				abgabeButton.setBackground(getResources().getDrawable(R.drawable.tippabgabe_selector_button));
 			} else {
-				String dauer = "";
-				String tage = parts[1];
-				String stunden = parts[2];
-
-				if (tage.equals("0")) {
-					dauer = stunden + " Stunden";
+				abgabeButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.tippabgabe_selector_button));
+			}
+			abgabeButton.setText("Tipps abgegeben");
+			abgabeButton.setEnabled(false);
+		} else {
+			String dauer = "";
+			String tage = status.getTage();
+			String stunden = status.getStunden();
+			String spieltag = status.getSpieltag();
+			scheduleTippabgabeNotification(spieltag, tage, stunden);
+			if (tage.equals("0")) {
+				dauer = stunden + " Stunden";
+			} else {
+				if (!stunden.equals("0")) {
+					Double std = Double.valueOf(stunden);
+					double rat = std / 24;
+					rat += Double.valueOf(tage);
+					rat = Math.round(rat * 10.0) / 10.0;
+					dauer = rat + " Tage";
 				} else {
-					if (!stunden.equals("0")) {
-						Double std = Double.valueOf(stunden);
-						double rat = std / 24;
-						rat += Double.valueOf(tage);
-						rat = Math.round(rat * 10.0) / 10.0;
-						dauer = rat + " Tage";
-					} else {
-						dauer = tage + " Tage";
-					}
+					dauer = tage + " Tage";
 				}
-				abgabeButton.setText(Html.fromHtml("Tippen <small>(" + dauer
-						+ ")</small>"));
-				abgabeButton.setEnabled(true);
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-					abgabeButton.setBackground(getResources().getDrawable(
-							R.drawable.tippabgabe_selector_red));
-				} else {
-					abgabeButton.setBackgroundDrawable(getResources()
-							.getDrawable(R.drawable.tippabgabe_selector_red));
-				}
-
+			}
+			abgabeButton.setText(Html.fromHtml("Tippen <small>(" + dauer + ")</small>"));
+			abgabeButton.setEnabled(true);
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+				abgabeButton.setBackground(getResources().getDrawable(R.drawable.tippabgabe_selector_red));
+			} else {
+				abgabeButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.tippabgabe_selector_red));
 			}
 
-			// ((Button) findViewById(R.id.tippabgabe)).setText(Html
-			// .fromHtml("Tippabgabe<br/><font size='-3'>(11 Tage und 4 Stunden)</font>"));
-		} else {
-			// TODO error handling
 		}
+
+		// ((Button) findViewById(R.id.tippabgabe)).setText(Html
+		// .fromHtml("Tippabgabe<br/><font size='-3'>(11 Tage und 4 Stunden)</font>"));
 	}
 
 	private void reloadGesamtStand() {
 		GesamtStand[] staende = TippConnection.getGesamtStandKurz();
 
-		zeigePosition(staende[0], R.id.gesposition, R.id.gesname,
-				R.id.gespunkte);
-		zeigePosition(staende[1], R.id.ges2position, R.id.ges2name,
-				R.id.ges2punkte);
-		zeigePosition(staende[2], R.id.ges3position, R.id.ges3name,
-				R.id.ges3punkte);
-		zeigePosition(staende[3], R.id.ges4position, R.id.ges4name,
-				R.id.ges4punkte);
+		zeigePosition(staende[0], R.id.gesposition, R.id.gesname, R.id.gespunkte);
+		zeigePosition(staende[1], R.id.ges2position, R.id.ges2name, R.id.ges2punkte);
+		zeigePosition(staende[2], R.id.ges3position, R.id.ges3name, R.id.ges3punkte);
+		zeigePosition(staende[3], R.id.ges4position, R.id.ges4name, R.id.ges4punkte);
 	}
 
-	private void zeigePosition(GesamtStand gesamtStand, int gesposition,
-			int gesname, int gespunkte) {
+	private void zeigePosition(GesamtStand gesamtStand, int gesposition, int gesname, int gespunkte) {
 		TextView position = (TextView) findViewById(gesposition);
 		TextView name = (TextView) findViewById(gesname);
 		TextView punkte = (TextView) findViewById(gespunkte);
 
 		position.setText(gesamtStand.getPosition().toString());
 		name.setText(gesamtStand.getTipper().getId());
-		if (gesamtStand.getTipper().equals(
-				Tipprunde.instance.getAngemeldeterTipper())) {
+		if (gesamtStand.getTipper().equals(Tipprunde.instance.getAngemeldeterTipper())) {
 			name.setTypeface(null, Typeface.BOLD);
 			punkte.setTypeface(null, Typeface.BOLD);
 			position.setTypeface(null, Typeface.BOLD);
@@ -180,10 +172,8 @@ public class MainActivity extends Activity {
 	private void reloadLetzterSpieltag() {
 		SpieltagPosition sp = TippConnection.getSpieltagPosition();
 		// ((TextView) findViewById(R.id.tag)).setText(sp.getNummer() + ".");
-		((TextView) findViewById(R.id.punkte)).setText(sp.getPunkte()
-				.toString());
-		((TextView) findViewById(R.id.position)).setText(sp.getPosition()
-				.toString());
+		((TextView) findViewById(R.id.punkte)).setText(sp.getPunkte().toString());
+		((TextView) findViewById(R.id.position)).setText(sp.getPosition().toString());
 		String siegerText = sp.getSieger() + " (" + sp.getMax() + ")";
 		((TextView) findViewById(R.id.sieger)).setText(siegerText);
 		int schnitt = sp.getSchnitt();
@@ -207,19 +197,15 @@ public class MainActivity extends Activity {
 		ergebnisse.setEnabled(offeneSpiele);
 		if (offeneSpiele) {
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-				ergebnisse.setBackground(getResources().getDrawable(
-						R.drawable.tippabgabe_selector_red));
+				ergebnisse.setBackground(getResources().getDrawable(R.drawable.tippabgabe_selector_red));
 			} else {
-				ergebnisse.setBackgroundDrawable(getResources().getDrawable(
-						R.drawable.tippabgabe_selector_red));
+				ergebnisse.setBackgroundDrawable(getResources().getDrawable(R.drawable.tippabgabe_selector_red));
 			}
 		} else {
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-				ergebnisse.setBackground(getResources().getDrawable(
-						R.drawable.tippabgabe_selector_button));
+				ergebnisse.setBackground(getResources().getDrawable(R.drawable.tippabgabe_selector_button));
 			} else {
-				ergebnisse.setBackgroundDrawable(getResources().getDrawable(
-						R.drawable.tippabgabe_selector_button));
+				ergebnisse.setBackgroundDrawable(getResources().getDrawable(R.drawable.tippabgabe_selector_button));
 			}
 		}
 
@@ -232,15 +218,13 @@ public class MainActivity extends Activity {
 		String password = null;
 		if (isInitialized()) {
 			// read from preferences
-			tipprundeId = preferences.getString(
-					getString(R.string.tipprundeid), "");
+			tipprundeId = preferences.getString(getString(R.string.tipprundeid), "");
 			benutzer = preferences.getString(getString(R.string.benutzer), "");
 			password = preferences.getString(getString(R.string.Passwort), "");
 		} else {
 			// first usage, read from intent and save to preferences
 			Editor edit = preferences.edit();
-			tipprundeId = intent
-					.getStringExtra(getString(R.string.tipprundeid));
+			tipprundeId = intent.getStringExtra(getString(R.string.tipprundeid));
 			edit.putString(getString(R.string.tipprundeid), tipprundeId);
 			benutzer = intent.getStringExtra(getString(R.string.benutzer));
 			edit.putString(getString(R.string.benutzer), benutzer);
@@ -305,11 +289,21 @@ public class MainActivity extends Activity {
 		if (isInitialized()) {
 			reload();
 		}
-		scheduleNotification();
 	}
 
 	@Override
 	protected void onStop() {
 		super.onStop();
+	}
+
+	private boolean alreadyScheduledFor(Tipprunde runde, String spieltag) {
+		SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+		String key = createTippabgabeScheduleKey(runde);
+		return prefs.getString(key, "0").equals(spieltag);
+	}
+
+	private String createTippabgabeScheduleKey(Tipprunde runde) {
+		String key = SCHEDULED_TIPPABGABE_SPIELTAG + "_" + runde.getId() + "_" + runde.getAngemeldeterTipper().getId();
+		return key;
 	}
 }
