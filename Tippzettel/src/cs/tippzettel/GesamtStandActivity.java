@@ -40,14 +40,22 @@ public class GesamtStandActivity extends Activity {
 		tl.addView(header);
 
 		GesamtStand[] gesamtStaende = TippConnection.getGesamtStand();
+		int punkteVorher = -100;
 		for (GesamtStand stand : gesamtStaende) {
+			Integer punkteInt = stand.getPunkte();
+			int diff = 0;
+			if (punkteVorher != -100) {
+				diff = punkteVorher - punkteInt;
+			}
+			punkteVorher = punkteInt;
 			TableRow tr = new TableRow(this);
-			tr.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+			LayoutParams rowLayout = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 			TextView position = new TextView(this);
 			position.setTextSize(18);
 			position.setText(stand.getPosition().toString());
 			LayoutParams layout = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-			layout.setMargins(0, 0, 0, 10);
+			int topMargin = 2 * diff;
+			layout.topMargin = topMargin;
 			position.setLayoutParams(layout);
 			position.setGravity(Gravity.CENTER_HORIZONTAL);
 			tr.addView(position);
@@ -56,14 +64,19 @@ public class GesamtStandActivity extends Activity {
 			name.setText(stand.getTipper().getName());
 			name.setTextSize(18);
 
-			name.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+			LayoutParams nameLayout = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+			nameLayout.topMargin = topMargin;
+			name.setLayoutParams(nameLayout);
+
 			name.setGravity(Gravity.CENTER_HORIZONTAL);
 			tr.addView(name);
 
 			TextView punkte = new TextView(this);
-			punkte.setText(stand.getPunkte().toString());
+			punkte.setText(punkteInt.toString());
 			punkte.setTextSize(18);
-			punkte.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+			LayoutParams punkteLayout = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+			punkteLayout.topMargin = topMargin;
+			punkte.setLayoutParams(punkteLayout);
 			punkte.setGravity(Gravity.CENTER_HORIZONTAL);
 
 			if (stand.getTipper().equals(runde.getAngemeldeterTipper())) {
@@ -81,7 +94,7 @@ public class GesamtStandActivity extends Activity {
 			if (stand.getDiff() != 0) {
 				ImageView tendenzView = new ImageView(this);
 				LayoutParams layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-				layoutParams.setMargins(0, 10, 0, 0);
+				layoutParams.topMargin = topMargin + 10;
 				tendenzView.setLayoutParams(layoutParams);
 				if (stand.getDiff() < 0) {
 					tendenzView.setImageResource(R.drawable.uparrow);
@@ -90,8 +103,11 @@ public class GesamtStandActivity extends Activity {
 				}
 				tr.addView(tendenzView);
 			}
+			tr.setLayoutParams(rowLayout);
+			TableLayout.LayoutParams tableLayout = new TableLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
+					LayoutParams.WRAP_CONTENT);
 
-			tl.addView(tr, new TableLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+			tl.addView(tr, tableLayout);
 		}
 
 	}
